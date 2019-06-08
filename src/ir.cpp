@@ -18331,11 +18331,11 @@ static IrInstruction *ir_analyze_instruction_byte_offset_of(IrAnalyze *ira,
 
     IrInstruction *field_name_value = instruction->field_name->child;
     size_t byte_offset = 0;
-    if (!validate_byte_offset(ira, type_value, field_name_value, &byte_offset))
+    TypeStructField *field = nullptr;
+    if (!(field = validate_byte_offset(ira, type_value, field_name_value, &byte_offset)))
         return ira->codegen->invalid_instruction;
 
-
-    return ir_const_unsigned(ira, &instruction->base, byte_offset);
+    return ir_const_unsigned(ira, &instruction->base, byte_offset + field->bit_offset_in_host / 8);
 }
 
 static IrInstruction *ir_analyze_instruction_bit_offset_of(IrAnalyze *ira,
